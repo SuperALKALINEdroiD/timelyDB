@@ -6,17 +6,6 @@ import (
 	"os"
 )
 
-type DatabaseConfig struct {
-	DBName      string `json:"db_name"`
-	DBType      string `json:"db_type"`
-	TimeSeries  bool   `json:"time_series"`
-	LockEnabled bool   `json:"lock_enabled"`
-}
-
-type Config struct {
-	Databases []DatabaseConfig `json:"databases"`
-}
-
 func LoadConfig(filePath string) (*Config, error) {
 	file, err := os.Open(filePath)
 
@@ -25,7 +14,7 @@ func LoadConfig(filePath string) (*Config, error) {
 	}
 
 	defer file.Close()
-
+	
 	var config Config
 	
 	decoder := json.NewDecoder(file)
@@ -59,7 +48,6 @@ func (c *Config) SaveConfig(filePath string) error {
 	defer file.Close()
 
 	encoder := json.NewEncoder(file)
-	encoder.SetIndent("", "    ") 
 	err = encoder.Encode(c)
 	
 	if err != nil {
