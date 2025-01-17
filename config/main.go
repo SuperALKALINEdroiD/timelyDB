@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -33,7 +34,16 @@ func LoadConfig(filePath string) (*DatabaseConfig, error) {
 		return nil, fmt.Errorf("failed to parse config file: %v", err)
 	}
 
-	return &config, nil
+	if config.validateConfig() {
+		return &config, nil
+	}
+
+	return nil, fmt.Errorf("invalid config")
+
+}
+
+func (config *DatabaseConfig) validateConfig() bool {
+	return true
 }
 
 func (c *DatabaseConfig) SaveConfig(filePath string) error {
@@ -69,6 +79,6 @@ func GenerateConfig(filePath string) (*DatabaseConfig, error) {
 		return nil, fmt.Errorf("failed to save config file, error on encoder: %v", err)
 	}
 
-	fmt.Println("Configuration file created successfully at:", filePath)
+	log.Println("Configuration file created successfully at:", filePath)
 	return &exampleConfig, nil
 }

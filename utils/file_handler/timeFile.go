@@ -2,6 +2,7 @@ package filehandler
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -57,7 +58,7 @@ func AppendOrCreateFile(databaseConfig *config.DatabaseConfig, data []byte) erro
 	}
 
 	if !exists {
-		fmt.Println("File does not exist, creating a new one...")
+		log.Println("File does not exist, creating a new one...")
 	}
 
 	file, err := os.OpenFile(GetFilePath(databaseConfig), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
