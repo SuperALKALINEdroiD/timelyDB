@@ -1,0 +1,15 @@
+{
+	 "dbName": "example_store",
+	 "port": 7001,
+	 "isLockEnabled": true,
+	 "timelyConfig": {
+	 	 "isEnabled": true,
+	 	 "type": 72
+	 },
+	 "nodes": [
+	 	 {
+	 	 	 "endpoint": "127.0.0.1:50051"
+	 	 }
+	 ],
+	 "nodeCount": 1
+}
