@@ -9,7 +9,7 @@ import (
 
 func LoadConfig(filePath string) (*DatabaseConfig, error) {
 	if filePath == "" {
-		config, error := GenerateConfig("config.json")
+		config, error := GenerateConfig("default-config.json")
 
 		if error != nil {
 			return nil, fmt.Errorf("failed to create config file: %v", error)
@@ -43,6 +43,10 @@ func LoadConfig(filePath string) (*DatabaseConfig, error) {
 }
 
 func (config *DatabaseConfig) validateConfig() bool {
+	if len(config.Nodes) == 0 {
+		config.Nodes = generateNodeConfig(config.NodeCount, "")
+	}
+
 	return true
 }
 

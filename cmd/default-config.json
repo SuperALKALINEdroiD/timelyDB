@@ -8,7 +8,7 @@
 	 },
 	 "nodes": [
 	 	 {
-	 	 	 "endpoint": "127.0.0.1:50051"
+	 	 	 "endpoint": ":50051"
 	 	 }
 	 ],
 	 "nodeCount": 1

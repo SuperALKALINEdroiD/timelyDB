@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/SuperALKALINEdroiD/timelyDB/config"
 	"github.com/go-chi/chi/middleware"
@@ -11,7 +12,11 @@ import (
 )
 
 func initEnvironment() (*config.DatabaseConfig, error) {
-	cfg, err := config.LoadConfig("") // TODO: Load from environment or file path
+	var configPath = os.Getenv("CONFIG_PATH")
+
+	fmt.Println(configPath)
+
+	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
 		log.Printf("Error loading configuration: %v", err)
 		return nil, err
