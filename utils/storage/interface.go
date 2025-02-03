@@ -10,7 +10,8 @@ type WAL interface {
 	Storage
 	WriteLog(data []byte) error           // write WAL logs
 	ReadLog(offset int64) ([]byte, error) // read WAL Logs
-	TruncateLog(offset int64) error       // save logs to memory and clear memory
+	TruncateLog(offset int64) error       // clear log file
+	Reconstruct(offset int64) error       // reconstruct the data from WAL
 }
 
 type KVStore interface {

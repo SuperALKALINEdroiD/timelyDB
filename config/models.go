@@ -9,6 +9,7 @@ type DatabaseConfig struct {
 	TimelyConfig             TimelyConfig `json:"timelyConfig"`
 	Nodes                    []NodeConfig `json:"nodes"`
 	NodeCount                int          `json:"nodeCount"`
+	Mode                     string       `json:"mode"` /// log or kv
 	InMemoryStorageThreshold int64        `json:"inMemoryStorageThreshold"`
 }
 
@@ -42,7 +43,7 @@ func generateNodeConfig(nodeCount int, host string) (nodes []NodeConfig) {
 	nodes = make([]NodeConfig, nodeCount)
 	for i := 0; i < nodeCount; i++ {
 		nodes[i] = NodeConfig{
-			Endpoint: fmt.Sprintf("%s:%d", host, 50051+i), // TODO: fix a port number
+			Endpoint: fmt.Sprintf("%s:%d", host, 50051+i), // TODO: fix a port number format
 		}
 	}
 
