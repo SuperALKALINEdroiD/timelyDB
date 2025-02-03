@@ -6,10 +6,16 @@ message NodeSearchRequest {
 }
 
 enum Operation {
-    UNKNOWN = 0;
-    CREATE = 1;
-    UPDATE = 2;
-    DELETE = 3;
+  UNKNOWN = 0;
+  CREATE = 1;
+  UPDATE = 2;
+  DELETE = 3;
+}
+
+enum Status {
+  OK = 0;
+  NOT_FOUND = 1;
+  INVALID_REQUEST = 2;
 }
 
 message NodeManipulationRequest {
@@ -29,12 +35,6 @@ message NodeResponse {
   string key = 2;
   string value = 3;
   string timestamp = 4;
-  enum Status {
-    OK = 0;
-    NOT_FOUND = 1;
-    PERMISSION_DENIED = 2;
-    INVALID_REQUEST = 3;
-  }
   Status status = 5;
   string error_message = 6;
 }
@@ -53,3 +53,5 @@ service NodeService {
   
   rpc StreamNodeUpdates(stream NodeSearchRequest) returns (stream NodeResponse) {}
 }
+
+// protoc --go_out=storeNodes --go_opt=paths=source_relative --go-grpc_out=invoicer --go-grpc_opt=paths=source_relative utils/nodes/nodes.proto

@@ -14,6 +14,7 @@ import (
 type App struct {
 	Config *config.DatabaseConfig
 	Router *chi.Mux
+	Nodes  []*nodes.Node
 }
 
 func main() {
@@ -26,9 +27,8 @@ func main() {
 	app := &App{
 		Config: config,
 		Router: initRouter(config),
+		Nodes:  nodes.LoadNodes(config),
 	}
-
-	nodes.LoadNodes(app.Config) // TODO
 
 	serverAddress := fmt.Sprintf(":%d", app.Config.Port)
 	log.Printf("Starting server on %s", serverAddress)

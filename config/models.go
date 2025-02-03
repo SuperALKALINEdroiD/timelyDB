@@ -3,12 +3,13 @@ package config
 import "fmt"
 
 type DatabaseConfig struct {
-	StoreName     string       `json:"dbName"`
-	Port          int          `json:"port"`
-	IsLockEnabled bool         `json:"isLockEnabled"`
-	TimelyConfig  TimelyConfig `json:"timelyConfig"`
-	Nodes         []NodeConfig `json:"nodes"`
-	NodeCount     int          `json:"nodeCount"`
+	StoreName                string       `json:"dbName"`
+	Port                     int          `json:"port"`
+	IsLockEnabled            bool         `json:"isLockEnabled"`
+	TimelyConfig             TimelyConfig `json:"timelyConfig"`
+	Nodes                    []NodeConfig `json:"nodes"`
+	NodeCount                int          `json:"nodeCount"`
+	InMemoryStorageThreshold int64        `json:"inMemoryStorageThreshold"`
 }
 
 type TimelyConfig struct {
@@ -31,8 +32,9 @@ func GenerateExampleConfig(nodeCount int, host string) DatabaseConfig {
 			IsEnabled: true,
 			Type:      'H',
 		},
-		Nodes:     nodes,
-		NodeCount: nodeCount,
+		Nodes:                    nodes,
+		NodeCount:                nodeCount,
+		InMemoryStorageThreshold: 2000,
 	}
 }
 
