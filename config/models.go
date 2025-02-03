@@ -3,12 +3,13 @@ package config
 import "fmt"
 
 type DatabaseConfig struct {
-	StoreName     string       `json:"dbName"`
-	Port          int          `json:"port"`
-	IsLockEnabled bool         `json:"isLockEnabled"`
-	TimelyConfig  TimelyConfig `json:"timelyConfig"`
-	Nodes         []NodeConfig `json:"nodes"`
-	NodeCount     int          `json:"nodeCount"`
+	StoreName                string       `json:"dbName"`
+	Port                     int          `json:"port"`
+	IsLockEnabled            bool         `json:"isLockEnabled"`
+	TimelyConfig             TimelyConfig `json:"timelyConfig"`
+	Nodes                    []NodeConfig `json:"nodes"`
+	NodeCount                int          `json:"nodeCount"`
+	InMemoryStorageThreshold int64        `json:"inMemoryStorageThreshold"`
 }
 
 type TimelyConfig struct {
@@ -20,17 +21,8 @@ type NodeConfig struct {
 	Endpoint string `json:"endpoint"`
 }
 
-func GenerateExampleConfig(nodeCount int, defaultIP string) DatabaseConfig {
-	if defaultIP == "" {
-		defaultIP = "127.0.0.1"
-	}
-
-	nodes := make([]NodeConfig, nodeCount)
-	for i := 0; i < nodeCount; i++ {
-		nodes[i] = NodeConfig{
-			Endpoint: fmt.Sprintf("%s:%d", defaultIP, 50051+i), // TODO: fix a port number
-		}
-	}
+func GenerateExampleConfig(nodeCount int, host string) DatabaseConfig {
+	nodes := generateNodeConfig(nodeCount, host)
 
 	return DatabaseConfig{
 		StoreName:     "example_store",
@@ -40,7 +32,19 @@ func GenerateExampleConfig(nodeCount int, defaultIP string) DatabaseConfig {
 			IsEnabled: true,
 			Type:      'H',
 		},
-		Nodes:     nodes,
-		NodeCount: nodeCount,
+		Nodes:                    nodes,
+		NodeCount:                nodeCount,
+		InMemoryStorageThreshold: 2000,
 	}
+}
+
+func generateNodeConfig(nodeCount int, host string) (nodes []NodeConfig) {
+	nodes = make([]NodeConfig, nodeCount)
+	for i := 0; i < nodeCount; i++ {
+		nodes[i] = NodeConfig{
+			Endpoint: fmt.Sprintf("%s:%d", host, 50051+i), // TODO: fix a port number
+		}
+	}
+
+	return
 }

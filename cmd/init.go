@@ -4,14 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/SuperALKALINEdroiD/timelyDB/config"
+	"github.com/SuperALKALINEdroiD/timelyDB/handlers"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
 func initEnvironment() (*config.DatabaseConfig, error) {
-	cfg, err := config.LoadConfig("") // TODO: Load from environment or file path
+	var configPath = os.Getenv("CONFIG_PATH")
+
+	fmt.Println(configPath)
+
+	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
 		log.Printf("Error loading configuration: %v", err)
 		return nil, err
@@ -42,10 +48,7 @@ func initRoutes(router *chi.Mux, cfg *config.DatabaseConfig) {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, "Upsert Endpoint WIP - Config: %+v", cfg)
 		})
-		r.Post("/insert", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprintf(w, "Insert Endpoint WIP - Config: %+v", cfg)
-		})
+		r.Post("/insert", handlers.InsertHandler)
 		r.Post("/update", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, "Update Endpoint WIP - Config: %+v", cfg)

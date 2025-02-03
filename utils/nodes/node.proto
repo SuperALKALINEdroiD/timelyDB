@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+message NodeSearchRequest {
+  string node = 1;
+  string key = 2;
+}
+
+enum Operation {
+  UNKNOWN = 0;
+  CREATE = 1;
+  UPDATE = 2;
+  DELETE = 3;
+}
+
+enum Status {
+  OK = 0;
+  NOT_FOUND = 1;
+  INVALID_REQUEST = 2;
+}
+
+message NodeManipulationRequest {
+  string node = 1;
+  string key = 2;
+  string value = 3;
+  Operation operation = 4;
+}
+
+message NodeBatchRequest {
+  repeated NodeSearchRequest searches = 1;
+  repeated NodeManipulationRequest manipulations = 2;
+}
+
+message NodeResponse {
+  string node = 1;
+  string key = 2;
+  string value = 3;
+  string timestamp = 4;
+  Status status = 5;
+  string error_message = 6;
+}
+
+message NodeBatchResponse {
+  repeated NodeResponse responses = 1;
+}
+
+service NodeService {
+  rpc SearchNode(NodeSearchRequest) returns (NodeResponse) {}
+  rpc SearchNodeStream(NodeSearchRequest) returns (stream NodeResponse) {}
+  rpc BatchSearch(NodeBatchRequest) returns (NodeBatchResponse) {}
+  
+  rpc ManipulateNode(NodeManipulationRequest) returns (NodeResponse) {}
+  rpc BatchManipulate(NodeBatchRequest) returns (NodeBatchResponse) {}
+  
+  rpc StreamNodeUpdates(stream NodeSearchRequest) returns (stream NodeResponse) {}
+}
+
+// protoc --go_out=storeNodes --go_opt=paths=source_relative --go-grpc_out=invoicer --go-grpc_opt=paths=source_relative utils/nodes/nodes.proto
