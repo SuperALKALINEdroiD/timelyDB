@@ -1,10 +1,13 @@
 package storage
 
 import (
+	"bufio"
 	"errors"
 	"log"
 	"os"
 	"sync"
+
+	internalerrors "github.com/SuperALKALINEdroiD/timelyDB/utils/internalErrors"
 )
 
 type LocalWAL struct {
@@ -18,9 +21,9 @@ func openLocalStorageFile(path string) (*os.File, error) {
 }
 
 func (localWAL *LocalWAL) Connect(config map[string]interface{}) error {
-	path, ok := config["path"].(string)
+	path, ok := config["path"].(string) // type assertion to string
 	if !ok {
-		return errors.New("invalid WAL storage path")
+		return internalerrors.InvalidPath
 	}
 
 	maxSize, ok := config["maxSize"].(int) // TODO: see if i can do something with this
@@ -66,6 +69,45 @@ func (localWAL *LocalWAL) WriteLog(data []byte) error {
 	localWAL.file.Sync() // TODO: find a better time to sync changes to stable storage
 
 	return nil
+}
+
+func (localWAL *LocalWAL) ReadLog(startLine, endLine int) ([]string, error) {
+	localWAL.mutex.Lock()
+	defer localWAL.mutex.Unlock()
+
+	if startLine < 0 || endLine <= startLine {
+		return nil, errors.New("invalid line range")
+	}
+
+	file, err := os.Open(localWAL.file.Name())
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	var lines []string
+	lineNum := 0
+
+	for scanner.Scan() {
+		if lineNum >= startLine {
+			lines = append(lines, scanner.Text())
+		}
+		if lineNum >= endLine-1 {
+			break
+		}
+		lineNum++
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	if len(lines) == 0 {
+		return nil, errors.New("startLine is beyond total lines in file")
+	}
+
+	return lines, nil
 }
 
 type LocalKVStore struct {

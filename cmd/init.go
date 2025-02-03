@@ -8,6 +8,7 @@ import (
 
 	"github.com/SuperALKALINEdroiD/timelyDB/config"
 	"github.com/SuperALKALINEdroiD/timelyDB/handlers"
+	"github.com/SuperALKALINEdroiD/timelyDB/utils/logs"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
@@ -44,11 +45,14 @@ func initRoutes(router *chi.Mux, cfg *config.DatabaseConfig) {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintln(w, "Server is running")
 		})
+
 		r.Post("/upsert", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, "Upsert Endpoint WIP - Config: %+v", cfg)
 		})
-		r.Post("/insert", handlers.InsertHandler)
+
+		r.With(logs.WriteAheadMiddleware1).Post("/insert", handlers.InsertHandler)
+
 		r.Post("/update", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, "Update Endpoint WIP - Config: %+v", cfg)

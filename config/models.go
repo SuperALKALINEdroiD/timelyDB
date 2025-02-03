@@ -3,14 +3,19 @@ package config
 import "fmt"
 
 type DatabaseConfig struct {
-	StoreName                string       `json:"dbName"`
-	Port                     int          `json:"port"`
-	IsLockEnabled            bool         `json:"isLockEnabled"`
-	TimelyConfig             TimelyConfig `json:"timelyConfig"`
-	Nodes                    []NodeConfig `json:"nodes"`
-	NodeCount                int          `json:"nodeCount"`
-	Mode                     string       `json:"mode"` /// log or kv
-	InMemoryStorageThreshold int64        `json:"inMemoryStorageThreshold"`
+	StoreName                string         `json:"dbName"`
+	Port                     int            `json:"port"`
+	IsLockEnabled            bool           `json:"isLockEnabled"`
+	TimelyConfig             TimelyConfig   `json:"timelyConfig"`
+	Nodes                    []NodeConfig   `json:"nodes"`
+	NodeCount                int            `json:"nodeCount"`
+	Mode                     string         `json:"mode"` /// log or kv
+	InMemoryStorageThreshold int64          `json:"inMemoryStorageThreshold"`
+	MetaDataConfig           MetaDataConfig `json:"metaDataConfig"` // will use to store cluster state
+}
+
+type MetaDataConfig struct {
+	State string `json:"state"`
 }
 
 type TimelyConfig struct {
