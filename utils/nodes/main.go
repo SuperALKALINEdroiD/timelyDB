@@ -4,23 +4,16 @@ import (
 	"log"
 
 	"github.com/SuperALKALINEdroiD/timelyDB/config"
-	"github.com/SuperALKALINEdroiD/timelyDB/utils/logs"
 )
 
 type Node struct {
-	ID  string
-	WAL *logs.WAL
+	ID string
 }
 
 func NodeSeupTask(nodeID string) (*Node, error) {
-	wal, err := logs.SetupWAL(nodeID)
-	if err != nil {
-		return nil, err
-	}
 
 	return &Node{
-		ID:  nodeID,
-		WAL: wal,
+		ID: nodeID,
 	}, nil
 }
 

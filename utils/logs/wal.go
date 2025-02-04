@@ -1,10 +1,7 @@
 package logs
 
 import (
-	"context"
 	"encoding/json"
-	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/SuperALKALINEdroiD/timelyDB/utils/storage"
@@ -28,50 +25,30 @@ type WriteAheadEntry struct {
 	Status    EntryStatus
 }
 
-func WriteAheadMiddleware1(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		// TODO: Initialize WAL based on configuration
-		walStorage := &storage.LocalWAL{}
-
-		writeAheadEntry := WriteAheadEntry{
-			EntryID:   uuid.New().String(),
-			NodeID:    0, // TODO: Retrieve actual node ID
-			Timestamp: time.Now(),
-			File:      walStorage,         // Initialized WAL storage
-			Data:      []byte("log data"), // Replace with actual data
-			Status:    Pending,
-		}
-
-		logData, err := json.Marshal(writeAheadEntry)
-		if err != nil {
-			http.Error(w, "Failed to serialize log entry", http.StatusInternalServerError)
-			return
-		}
-
-		if err := writeAheadEntry.File.WriteLog(logData); err != nil {
-			http.Error(w, "Failed to write to WAL", http.StatusInternalServerError)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), "WALEntryId", writeAheadEntry.EntryID)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+func GetWAlStorage() storage.WAL {
+	// TODO: intialize the storage based on config after integration
+	return &storage.LocalWAL{}
 }
 
-func WriteAheadStatusMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		entryID, ok := r.Context().Value("WALEntryId").(string)
-		if !ok {
-			http.Error(w, "Missing WAL Entry ID in context", http.StatusInternalServerError)
-			return
-		}
+func AddWalEntry() { // TODO look intpo reverting WAL entry incase write fails
+	// TODO accept data to be logged as parameter
+	walStorage := GetWAlStorage()
 
-		// TODO update wal status based on entryId
+	writeAheadEntry := WriteAheadEntry{
+		EntryID:   uuid.New().String(),
+		NodeID:    0, // TODO: Retrieve actual node ID
+		Timestamp: time.Now(),
+		File:      walStorage,         // Initialized WAL storage
+		Data:      []byte("log data"), // Replace with actual data
+		Status:    Committed,
+	}
 
-		fmt.Println(entryID)
+	logData, err := json.Marshal(writeAheadEntry)
+	if err != nil {
+		panic("Failed to serialize the log entry")
+	}
 
-		next.ServeHTTP(w, r)
-	})
+	if err := writeAheadEntry.File.WriteLog(logData); err != nil {
+		panic("Failed to write to write ahead logs")
+	}
 }

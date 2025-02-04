@@ -2,6 +2,8 @@ package config
 
 import "fmt"
 
+type StoreMode string
+
 type DatabaseConfig struct {
 	StoreName                string         `json:"dbName"`
 	Port                     int            `json:"port"`
@@ -9,7 +11,7 @@ type DatabaseConfig struct {
 	TimelyConfig             TimelyConfig   `json:"timelyConfig"`
 	Nodes                    []NodeConfig   `json:"nodes"`
 	NodeCount                int            `json:"nodeCount"`
-	Mode                     string         `json:"mode"` /// log or kv
+	Mode                     StoreMode      `json:"mode"`
 	InMemoryStorageThreshold int64          `json:"inMemoryStorageThreshold"`
 	MetaDataConfig           MetaDataConfig `json:"metaDataConfig"` // will use to store cluster state
 }
@@ -17,6 +19,11 @@ type DatabaseConfig struct {
 type MetaDataConfig struct {
 	State string `json:"state"`
 }
+
+const (
+	KV   StoreMode = "KV"
+	Logs StoreMode = "Logs"
+)
 
 type TimelyConfig struct {
 	IsEnabled bool `json:"isEnabled"`
@@ -38,6 +45,7 @@ func GenerateExampleConfig(nodeCount int, host string) DatabaseConfig {
 			IsEnabled: true,
 			Type:      'H',
 		},
+		Mode:                     KV,
 		Nodes:                    nodes,
 		NodeCount:                nodeCount,
 		InMemoryStorageThreshold: 2000,
