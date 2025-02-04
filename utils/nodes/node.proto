@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "github.com/SuperALKALINEdroiD/timelyDB/utils/nodes";
+
 message NodeSearchRequest {
   string node = 1;
   string key = 2;
@@ -53,5 +55,3 @@ service NodeService {
   
   rpc StreamNodeUpdates(stream NodeSearchRequest) returns (stream NodeResponse) {}
 }
-
-// protoc --go_out=storeNodes --go_opt=paths=source_relative --go-grpc_out=invoicer --go-grpc_opt=paths=source_relative utils/nodes/nodes.proto

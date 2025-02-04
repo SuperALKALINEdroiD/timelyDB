@@ -17,7 +17,8 @@ type DatabaseConfig struct {
 }
 
 type MetaDataConfig struct {
-	State string `json:"state"`
+	State   string `json:"state"`
+	WALPath string `json:"walPath"`
 }
 
 const (
