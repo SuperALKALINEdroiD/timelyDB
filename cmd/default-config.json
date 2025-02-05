@@ -11,5 +11,11 @@
 	 	 	 "endpoint": ":50051"
 	 	 }
 	 ],
-	 "nodeCount": 1
+	 "nodeCount": 1,
+	 "mode": "KV",
+	 "inMemoryStorageThreshold": 2000,
+	 "metaDataConfig": {
+	 	 "state": "",
+	 	 "walPath": ""
+	 }
 }
